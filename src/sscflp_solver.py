@@ -1,5 +1,6 @@
 import random
 from dataclasses import dataclass
+from pathlib import Path
 from typing import List
 
 import pandas as pd
@@ -273,8 +274,6 @@ def tabu_search(
     tabu_customer = {}
     tabu_facility = {}
     move_frequency = {}  # (customer, facility) -> count
-    
-    # Fixed Tabu Tenure (User vetted)
     current_tenure = tabu_tenure
 
     if candidate_customers is None or candidate_customers > n:
@@ -765,7 +764,6 @@ def compute_lp_relaxation_lb(inst):
         for i in range(m)
     }
 
-    # NOTE: cost[i][j] already includes demand weighting, don't multiply by demand again
     prob += (
         pulp.lpSum(
             cost[i][j] * x[(i, j)]  # No demand multiplication here
@@ -800,7 +798,7 @@ def compute_lp_relaxation_lb(inst):
 
 
 if __name__ == "__main__":
-    excel_file = "Modeling data.xlsx"
+    excel_file = Path(__file__).resolve().parents[1] / "data" / "Modeling data.xlsx"
     sheet_names = ["Problem Instance1", "Problem Instance2", "Problem Instance3"]
 
     max_iterations = 5
@@ -809,7 +807,7 @@ if __name__ == "__main__":
     alpha_min = 0.1
     alpha_max = 0.4
 
-    seeds = [random.randint(1,200)]
+    seeds = [103]
     
     summary_results = []  # To store (Instance, Best GRASP, Best Tabu, LB, Gap)
 
